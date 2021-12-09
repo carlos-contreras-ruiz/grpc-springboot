@@ -1,8 +1,9 @@
 package com.github.carloscontrerasruiz;
 
-import com.github.carloscontrerasruiz.proto.Address;
-import com.github.carloscontrerasruiz.proto.Car;
+
 import com.github.carloscontrerasruiz.proto.Person;
+import com.github.carloscontrerasruiz.proto.common.Address;
+import com.github.carloscontrerasruiz.proto.common.Car;
 
 import java.util.Arrays;
 import java.util.List;

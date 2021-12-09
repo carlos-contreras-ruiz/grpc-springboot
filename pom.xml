@@ -14,7 +14,9 @@
     </properties>
 
     <dependencies>
-        <!--Dependencias para GRPC Spring JAVA https://github.com/grpc/grpc-java-->
+        <!--Dependencias para GRPC Spring JAVA https://github.com/grpc/grpc-java
+        En estas ya se incluyen las dependencias de protos de google
+        -->
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-netty-shaded</artifactId>

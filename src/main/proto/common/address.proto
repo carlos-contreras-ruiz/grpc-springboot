@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package com.github.carloscontrerasruiz.proto.common;
+option java_multiple_files = true;
+
+message Address{
+    int32 postbox = 1;
+    string street = 2;
+    string city = 3;
+}

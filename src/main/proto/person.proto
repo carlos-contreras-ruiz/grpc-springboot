@@ -1,35 +1,23 @@
 syntax = "proto3";
 
+package com.github.carloscontrerasruiz.proto;
 option java_multiple_files = true;
 option java_package = "com.github.carloscontrerasruiz.proto";
 
-package com.github.carloscontrerasruiz.proto;
+import "common/address.proto";
+import "common/car.proto";
 
-message Address{
-  int32 postbox = 1;
-  string street = 2;
-  string city = 3;
-}
-message Car {
-  string make = 1;
-  string model = 2;
-  int32 year = 3;
-  BodyStyle body_style = 4;
-}
+import "google/protobuf/wrappers.proto";
+
 message Person{
   string name = 1;
+  //In order to have the methos hasAge o has* debemos envolver los valores
+  //primitivos con clases builders como las de google
+  //con el metodo has podemos saber si el valor fue mandado o no
+  //google.protobuf.Int32Value age = 2;
   int32 age = 2;
-  Address address = 3;
-  repeated Car car = 4;
+  common.Address address = 3;
+  repeated common.Car car = 4;
 }
 
-message Dealer {
-  map<int32,Car> model = 1;
-}
-
-enum BodyStyle {
-  UNKNOWN = 0;
-  SEDAN = 1;
-  COUPE = 2;
-  PICKUP = 3;
-}
+//import "com/github/carloscontrerasruiz/proto/address.proto";

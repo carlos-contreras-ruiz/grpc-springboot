@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package com.github.carloscontrerasruiz.proto.common;
+option java_multiple_files = true;
+
+message Car {
+    string make = 1;
+    string model = 2;
+    int32 year = 3;
+    BodyStyle body_style = 4;
+}
+
+enum BodyStyle {
+    UNKNOWN = 0;
+    SEDAN = 1;
+    COUPE = 2;
+    PICKUP = 3;
+}

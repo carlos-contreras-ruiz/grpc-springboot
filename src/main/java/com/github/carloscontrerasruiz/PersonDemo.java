@@ -1,6 +1,7 @@
 package com.github.carloscontrerasruiz;
 
 import com.github.carloscontrerasruiz.proto.Person;
+import com.google.protobuf.Int32Value;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,7 +12,14 @@ public class PersonDemo {
 
     public static void main(String[] args) {
         Person sam = Person.newBuilder().setName("sam").setAge(10).build();
+        /*Person sam = Person.newBuilder().setName("sam")
+                .setAge(Int32Value.newBuilder().setValue(32).build())
+                .build();
+        System.out.println(sam.hasAge());*/
         Person sam2 = Person.newBuilder().setName("Sam").setAge(10).build();
+       /* Person sam2 = Person.newBuilder().setName("Sam")
+                .setAge(Int32Value.newBuilder().setValue(33).build())
+                .build();*/
 
         System.out.println(sam.toString());
         //El metodo equals de protobuf compara campo por campo
