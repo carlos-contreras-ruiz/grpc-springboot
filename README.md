@@ -15,3 +15,6 @@ https://omnitracs.udemy.com/course/grpc-the-complete-guide-for-java-developers/
 target/protoc-plugins/protoc-3.17.2.exe --js_out=./ *.proto
 
 este comando debe ejecuratse desde donde se encuentran los proto files
+
+GRPCUI
+BLOOMGRPC

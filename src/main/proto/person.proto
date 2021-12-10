@@ -19,5 +19,13 @@ message Person{
   common.Address address = 3;
   repeated common.Car car = 4;
 }
+message Response{
+  string response = 1;
+}
 
+service PersonService {
+  rpc getPerson (Person) returns (Response);
+
+  rpc getPersonByAge (Person) returns (Person);
+}
 //import "com/github/carloscontrerasruiz/proto/address.proto";

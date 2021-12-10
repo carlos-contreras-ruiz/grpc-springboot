@@ -39,7 +39,7 @@ message Television {
     string brand = 1;
     //int32 model = 2;
     reserved 2;
-    reserved year,model;
+    //reserved year , model;
     int32 price = 4;
     Type type = 3;
 }
