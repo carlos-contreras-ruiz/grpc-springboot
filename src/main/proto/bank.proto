@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package com.github.carloscontrerasruiz.proto;
+
+option java_multiple_files = true;
+option java_package = "com.github.carloscontrerasruiz.proto";
+
+import "google/protobuf/wrappers.proto";
+
+message BalanceCheckRequest {
+    int32 account_number = 1;
+}
+
+message Balance {
+    int32 amount = 1;
+}
+
+message WithdrawRequest {
+    int32 account_number = 1;
+    int32 amount = 2;
+}
+
+message Money {
+    int32 value = 1;
+}
+
+message DepositRequest {
+    int32 account_number = 1;
+    int32 amount = 2;
+}
+
+service BankService {
+
+    //The unary example is in PersonImpl
+
+    //Serverside streaming
+    rpc withdraw(WithdrawRequest) returns (stream Money);
+
+    //Client streaming
+    rpc cashDeposit(stream DepositRequest) returns (Balance);
+}
