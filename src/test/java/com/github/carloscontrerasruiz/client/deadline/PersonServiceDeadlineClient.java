@@ -1,5 +1,6 @@
 package com.github.carloscontrerasruiz.client.deadline;
 
+import com.github.carloscontrerasruiz.interceptor.DeadlineInterceptor;
 import com.github.carloscontrerasruiz.proto.Person;
 import com.github.carloscontrerasruiz.proto.PersonServiceGrpc;
 import com.github.carloscontrerasruiz.proto.Response;
@@ -21,6 +22,7 @@ public class PersonServiceDeadlineClient {
     @BeforeAll
     public void setup(){
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 6565)
+                .intercept(new DeadlineInterceptor())
                 .usePlaintext()
                 .build();
 
@@ -30,7 +32,7 @@ public class PersonServiceDeadlineClient {
     @Test
     public void personServiceTest(){
         Response resp = this.blockingStub
-                .withDeadline(Deadline.after(2, TimeUnit.SECONDS))
+                //.withDeadline(Deadline.after(2, TimeUnit.SECONDS))
                 .getPerson(
                 Person.newBuilder()
                         .setName("Carlos")
@@ -45,7 +47,7 @@ public class PersonServiceDeadlineClient {
     public void personServiceTestByAge(){
         try{
             Person resp = this.blockingStub
-                    .withDeadline(Deadline.after(2, TimeUnit.SECONDS))
+                    //.withDeadline(Deadline.after(2, TimeUnit.SECONDS))
                     .getPersonByAge(
                             Person.newBuilder()
                                     .setName("Carlos")

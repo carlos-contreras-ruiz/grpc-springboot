@@ -1,14 +1,15 @@
-package com.github.carloscontrerasruiz.client.bank;
+package com.github.carloscontrerasruiz.client.interceptors;
 
+import com.github.carloscontrerasruiz.client.bank.BalanceStreamObserver;
+import com.github.carloscontrerasruiz.client.bank.MoneyStreamingResponse;
 import com.github.carloscontrerasruiz.interceptor.DeadlineInterceptor;
 import com.github.carloscontrerasruiz.proto.BankServiceGrpc;
 import com.github.carloscontrerasruiz.proto.DepositRequest;
-import com.github.carloscontrerasruiz.proto.PersonServiceGrpc;
 import com.github.carloscontrerasruiz.proto.WithdrawRequest;
-import com.google.common.util.concurrent.Uninterruptibles;
 import io.grpc.Deadline;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.stub.MetadataUtils;
 import io.grpc.stub.StreamObserver;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class BankClient {
+public class MetadataClientInterceptors {
 
     BankServiceGrpc.BankServiceBlockingStub blockingStub;
     BankServiceGrpc.BankServiceStub bankServiceStub;
@@ -26,6 +27,7 @@ public class BankClient {
     @BeforeAll
     public void setup() {
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 6565)
+                .intercept(MetadataUtils.newAttachHeadersInterceptor(ClientConstants.getClientToken()))
                 .intercept(new DeadlineInterceptor())
                 .usePlaintext()
                 .build();
@@ -36,17 +38,26 @@ public class BankClient {
 
     @Test
     public void withdrawTest() {
-        this.blockingStub
-                //we can set a custom deadline
-                .withDeadline(Deadline.after(4,TimeUnit.SECONDS))
-                .withdraw(
-                        WithdrawRequest.newBuilder()
-                                .setAccountNumber(1)
-                                .setAmount(50)
-                                .build()
-                )
-                //foreach remainig es un consumer cuando el server es streaming
-                .forEachRemaining(money -> System.out.println("Received: " + money.getValue()));
+
+        for (int i = 0; i < 4; i++) {
+            try {
+                this.blockingStub
+                        //we can set a custom deadline
+                        .withDeadline(Deadline.after(4, TimeUnit.SECONDS))
+                        .withCallCredentials(new UserSessionToken("user-secret-" + i + " standard"))
+                        .withdraw(
+                                WithdrawRequest.newBuilder()
+                                        .setAccountNumber(1)
+                                        .setAmount(50)
+                                        .build()
+                        )
+                        //foreach remainig es un consumer cuando el server es streaming
+                        .forEachRemaining(money -> System.out.println("Received: " + money.getValue()));
+            } catch (Exception e) {
+                System.out.println("Fail number " + i);
+            }
+        }
+
     }
 
     @Test
@@ -74,5 +85,4 @@ public class BankClient {
         streamObserver.onCompleted();
         latch.await();
     }
-
 }
