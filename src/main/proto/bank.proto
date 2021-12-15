@@ -29,12 +29,40 @@ message DepositRequest {
     int32 amount = 2;
 }
 
+enum ErrorMessage {
+    ONLY_TEN_MULTIPLES = 0;
+    INSUFFICIENTE_BALANCE = 2;
+}
+
+message WithdrawalError {
+    ErrorMessage error_message = 1;
+    int32 amount = 2;
+}
+
+message SuccessResponse {
+    Money money = 1;
+}
+
+message ErrorResponse {
+    ErrorMessage error_message = 1;
+}
+
+message ResponseErrorHandling {
+    oneof response {
+        ErrorResponse error_response = 1;
+        SuccessResponse success_response = 2;
+    }
+}
+
 service BankService {
 
     //The unary example is in PersonImpl
 
     //Serverside streaming
     rpc withdraw(WithdrawRequest) returns (stream Money);
+
+    //Serverside streaming oneof error handling
+    rpc withdrawOneOfError(WithdrawRequest) returns (stream ResponseErrorHandling);
 
     //Client streaming
     rpc cashDeposit(stream DepositRequest) returns (Balance);

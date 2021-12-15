@@ -2,6 +2,7 @@ package com.github.carloscontrerasruiz.client.interceptors;
 
 import com.github.carloscontrerasruiz.client.bank.BalanceStreamObserver;
 import com.github.carloscontrerasruiz.client.bank.MoneyStreamingResponse;
+import com.github.carloscontrerasruiz.client.bank.ResponseHandlerOneOfStreamingResponse;
 import com.github.carloscontrerasruiz.interceptor.DeadlineInterceptor;
 import com.github.carloscontrerasruiz.proto.BankServiceGrpc;
 import com.github.carloscontrerasruiz.proto.DepositRequest;
@@ -66,13 +67,28 @@ public class MetadataClientInterceptors {
         this.bankServiceStub.withdraw(
                 WithdrawRequest.newBuilder()
                         .setAccountNumber(1)
-                        .setAmount(50)
+                        .setAmount(37)
                         .build(),
                 new MoneyStreamingResponse(latch)
         );
         latch.await();
 
     }
+
+    @Test
+    public void withdrawTestAsyncOneof() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        this.bankServiceStub.withdrawOneOfError(
+                WithdrawRequest.newBuilder()
+                        .setAccountNumber(1)
+                        .setAmount(100)
+                        .build(),
+                new ResponseHandlerOneOfStreamingResponse(latch)
+        );
+        latch.await();
+
+    }
+
 
     @Test
     public void cashStreamingRequest() throws InterruptedException {

@@ -10,7 +10,7 @@ public class DeadlineInterceptor implements ClientInterceptor {
     public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> methodDescriptor, CallOptions callOptions, Channel channel) {
         Deadline deadline = callOptions.getDeadline();
         if (Objects.isNull(deadline)) {
-            callOptions = callOptions.withDeadline(Deadline.after(2, TimeUnit.SECONDS));
+            callOptions = callOptions.withDeadline(Deadline.after(20, TimeUnit.SECONDS));
         }
         return channel.newCall(methodDescriptor,callOptions);
     }
