@@ -3,17 +3,23 @@ package com.github.carloscontrerasruiz.client.bank;
 import com.github.carloscontrerasruiz.interceptor.DeadlineInterceptor;
 import com.github.carloscontrerasruiz.proto.BankServiceGrpc;
 import com.github.carloscontrerasruiz.proto.DepositRequest;
-import com.github.carloscontrerasruiz.proto.PersonServiceGrpc;
 import com.github.carloscontrerasruiz.proto.WithdrawRequest;
-import com.google.common.util.concurrent.Uninterruptibles;
+import com.github.carloscontrerasruiz.ssl.GrpcServerSsl;
 import io.grpc.Deadline;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
+import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
 import io.grpc.stub.StreamObserver;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import javax.net.ssl.SSLException;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -25,9 +31,24 @@ public class BankClient {
 
     @BeforeAll
     public void setup() {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 6565)
+
+        URL resourceCa = GrpcServerSsl.class.getClassLoader().getResource("ssl/ca.cert.pem");
+
+        SslContext sslContext = null;
+        try {
+            sslContext = GrpcSslContexts.forClient()
+                    .trustManager(new File(resourceCa.toURI()))
+                    .build();
+        } catch (SSLException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        ManagedChannel channel = NettyChannelBuilder.forAddress("localhost", 6565)
                 .intercept(new DeadlineInterceptor())
-                .usePlaintext()
+                .sslContext(sslContext)
+                //.usePlaintext()
                 .build();
 
         this.blockingStub = BankServiceGrpc.newBlockingStub(channel);
@@ -38,7 +59,7 @@ public class BankClient {
     public void withdrawTest() {
         this.blockingStub
                 //we can set a custom deadline
-                .withDeadline(Deadline.after(4,TimeUnit.SECONDS))
+                .withDeadline(Deadline.after(4, TimeUnit.SECONDS))
                 .withdraw(
                         WithdrawRequest.newBuilder()
                                 .setAccountNumber(1)
