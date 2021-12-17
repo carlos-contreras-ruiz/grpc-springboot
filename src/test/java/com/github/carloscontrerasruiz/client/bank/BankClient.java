@@ -4,10 +4,8 @@ import com.github.carloscontrerasruiz.interceptor.DeadlineInterceptor;
 import com.github.carloscontrerasruiz.proto.BankServiceGrpc;
 import com.github.carloscontrerasruiz.proto.DepositRequest;
 import com.github.carloscontrerasruiz.proto.WithdrawRequest;
-import com.github.carloscontrerasruiz.ssl.GrpcServerSsl;
 import io.grpc.Deadline;
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
@@ -32,7 +30,7 @@ public class BankClient {
     @BeforeAll
     public void setup() {
 
-        URL resourceCa = GrpcServerSsl.class.getClassLoader().getResource("ssl/ca.cert.pem");
+        URL resourceCa = BankClient.class.getClassLoader().getResource("ssl/ca.cert.pem");
 
         SslContext sslContext = null;
         try {

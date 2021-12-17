@@ -17,7 +17,7 @@ public class GrpcServerExecutor {
     public static void main(String[] args) throws IOException, InterruptedException {
         Server server = ServerBuilder.forPort(6565)
                 //.directExecutor()
-                .executor(Executors.newFixedThreadPool(20))
+                .executor(Executors.newFixedThreadPool(2))
                 .addService(new PersonImpl())
                 .addService(new BankService())
                 .addService(new TransferService())
